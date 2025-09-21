@@ -1,71 +1,94 @@
-FastAPI Lab 1 – Custom Iris Classifier API
+# FastAPI Lab 1 – Custom Iris Classifier API
 
-This lab is based on the provided FastAPI template for exposing ML models as APIs.
-I made the following custom changes and improvements to the original lab:
+This lab is based on the provided FastAPI template for exposing ML models as APIs.  
+I made the following **custom modifications** to ensure the work is unique and goes beyond the starter code.
 
-🔹 Modifications I Made
+---
 
-Custom main.py
+## Modifications I Made
 
-Rewrote the API logic instead of using the base version.
+### Model Changes
+- Replaced **DecisionTreeClassifier** with **RandomForestClassifier** for training (`train.py`).
+- Added **species mapping** so predictions return `"setosa"`, `"versicolor"`, `"virginica"` instead of raw integers.
+- Extended `/predict` response with **probabilities** (confidence scores).
+- Kept `iris_model.pkl` so the API loads the trained model without retraining each time.
 
-Implemented an organized IrisData (request) and IrisResponse (response) using Pydantic.
+### API Improvements
+- Rewrote the `main.py` logic to be structured and clear.
+- Implemented `IrisData` (request schema) and `IrisResponse` (response schema) using **Pydantic**.
+- Added better **error handling** with `HTTPException`.
+- Changed the request → response flow so predictions are clearer and structured JSON is returned.
+- Ensured correct **ordering of features**: `[sepal_length, sepal_width, petal_length, petal_width]`.
+- Added a new endpoint `/species_map` to expose the mapping of class → species.
 
-Added better error handling with HTTPException.
+### Project Setup
+- Created a new repo with **only my modified lab contents**.
+- Cleaned `.gitignore` to ignore venv, caches, and system files.
+- Added a focused **README.md** documenting all changes.
 
-Changed the request → response flow so prediction is clearer.
+---
 
-Prediction Endpoint
+## Project Structure
+mlops_labs/
+└── fastapi_lab1
+├── assets/
+├── fastapi_lab1_env/ <- virtual environment (ignored in git)
+├── model/
+│ └── iris_model.pkl
+├── src/
+│ ├── init.py
+│ ├── data.py
+│ ├── main.py
+│ ├── predict.py
+│ └── train.py
+├── README.md
+└── requirements.txt
 
-Modified how input features are structured before being passed to the model.
+yaml
+Copy code
 
-Ensured correct ordering of features: [sepal_length, sepal_width, petal_length, petal_width].
+---
 
-Added mapping so the model output is returned in a structured JSON.
+## How to Run
 
-README + Project Setup
-
-Created a new repo with only my modified lab contents.
-
-Cleaned .gitignore to ignore venvs, caches, and system files.
-
-Kept iris_model.pkl so the API works without retraining.
-
-🔹 How to Run
-
+1. Create and activate the virtual environment:
+   ```bash
+   python3 -m venv fastapi_lab1_env
+   source fastapi_lab1_env/bin/activate
 Install dependencies:
 
+bash
+Copy code
 pip install -r requirements.txt
+Run the API:
 
-
-Train the model (optional, pre-trained model already included):
-
+bash
+Copy code
 cd src
-python train.py
-
-
-Start the FastAPI server:
-
 uvicorn main:app --reload
+Open the API docs in browser:
 
-
-Test via Swagger UI:
-👉 http://127.0.0.1:8000/docs
-
-🔹 Example Request
-
-POST /predict
-
+arduino
+Copy code
+http://127.0.0.1:8000/docs
+✅ Example Request
+Input
+json
+Copy code
 {
-  "petal_length": 2.3,
-  "sepal_length": 4.0,
-  "petal_width": 0.6,
-  "sepal_width": 3.0
+  "sepal_length": 5.1,
+  "sepal_width": 3.5,
+  "petal_length": 1.4,
+  "petal_width": 0.2
 }
-
-
-Response:
-
+Output
+json
+Copy code
 {
-  "response": 0
+  "response": "setosa",
+  "probabilities": {
+    "setosa": 0.98,
+    "versicolor": 0.02,
+    "virginica": 0.00
+  }
 }
