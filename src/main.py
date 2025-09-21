@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from typing import List
 from predict import predict_data
 
-app = FastAPI(title="Iris Classifier API", version="1.0.2")
+app = FastAPI(title="Iris Classifier API", version="1.1.0")
 
 # Map prediction classes to species names
 species_map = {0: "setosa", 1: "versicolor", 2: "virginica"}
@@ -61,3 +61,12 @@ async def predict_iris(iris_features: IrisData):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# New endpoint to expose species mapping
+@app.get("/species_map", status_code=status.HTTP_200_OK)
+async def get_species_map():
+    """
+    Returns the mapping between class_id and species name.
+    """
+    return species_map
