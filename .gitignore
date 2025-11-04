@@ -1,0 +1,6 @@
+.DS_Store
+fastapi_lab1_env/
+Airflow_Lab_1/dags/__pycache__/
+Airflow_Lab_1/dags/model/
+Airflow_Lab_1/logs/
+.DS_Store
